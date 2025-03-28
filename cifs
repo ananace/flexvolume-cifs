@@ -69,8 +69,6 @@ set -u
 # date >> /tmp/cifs.log
 # echo "$@" >> /tmp/cifs.log
 
-DEFAULT_CONTAINER_SECURITY_CONTEXT="context=system_u:object_r:svirt_sandbox_file_t:s0"
-
 init() {
 	assertBinaryInstalled mount.cifs cifs-utils
 	assertBinaryInstalled jq jq
@@ -152,10 +150,6 @@ doMount() {
 	if [[ ! -z $(ls -A "$mountPoint" 2>/dev/null) ]] ; then
 		errorExit "cifs mount: mount directory is not an empty directory: '$mountPoint'"
 	fi
-
-	if [[ ! ${mountOptions} == *"context="* ]]; then
-            mountOptions="${mountOptions},${DEFAULT_CONTAINER_SECURITY_CONTEXT}"
-        fi
 
 	# Remove any stray comma from the end
 	mountOptions="${mountOptions%,}"
